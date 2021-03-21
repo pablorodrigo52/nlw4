@@ -22,7 +22,7 @@ class UserController{
 			/* crio uma alteração... */
 			const user = userRepository.create({ name, email });
 			/* dou um 'commit' na alteração realizada acima com o método .save() que me retorna um objeto que foi inserido no banco */
-			return response.send(await userRepository.save(user));
+			return response.status(201).send(await userRepository.save(user));
 		}
 	}
 }
