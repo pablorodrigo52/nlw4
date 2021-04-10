@@ -19,11 +19,15 @@ class SendMailService{
 		});
 	}
 
-	async execute(to:string, subject:string, body:string) {
+	async execute(to:string, variables:object, path: string) {
+		// const templateFileContent = fs.readFileSync(path).toString("utf8");
+		// const mailTemplateParse = handlebars.compile(templateFileContent); // using handlebars lib to create template
+		// const html = mailTemplateParse(variables);
+
 		const message = await this.client.sendMail({
 			to,
-			subject,
-			html: body,
+			subject: variables["title"],
+			html: variables["description"],
 			from: "NPS <noreply@nps.com.br>"
 		});
 
