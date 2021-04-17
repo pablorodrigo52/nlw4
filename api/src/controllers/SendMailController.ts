@@ -25,19 +25,21 @@ class SendMailController{
 			return response.status(400).json({error: "Survey does not exists"});
 		}
 
+		const surveyUserExists = await surveyUserRepository.findOne({
+			where: {user_id: userExists.id, value: null},
+			relations: ["user", "survey"]
+		});
+
 		const variables = {
 			name: userExists.name,
 			title: surveyExists.title,
 			description: surveyExists.description,
-			user_id: userExists.id,
+			id: "",
 			link: process.env.URL_MAIL
 		}
-		const surveyUserExists = surveyUserRepository.findOne({
-			where: [ {user_id: userExists.id},{values: null}],
-			relations: ["user", "survey"]
-		});
 
 		if (surveyUserExists){
+			variables.id = surveyUserExists.id;
 			await SendMailService.execute(email, variables, "path_to_template_email");
 			return response.json(surveyUserExists);	
 		}
@@ -48,7 +50,7 @@ class SendMailController{
 			survey_id
 		});
 		await surveyUserRepository.save(surveyUser);
-
+		variables.id = surveyUser.id;
 		// enviar email para o usuário
 		await SendMailService.execute(email, variables, "path_to_template_email");
 	
